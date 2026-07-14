@@ -1,0 +1,15 @@
+.DS_Store
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ipynb_checkpoints/
+.venv/
+venv/
+
+# Data and experiment artifacts belong on Drive, not in Git.
+data/
+features/
+results/
+figures/
+*.npz
+*.mat
