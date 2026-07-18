@@ -288,3 +288,39 @@ removed only the 24 Cz reference features; it did not remove any sentences,
 subjects, or usable recordings. The 104-channel smoke run
 `v1_full_smoke_no_cz` was started after this validation; its results were still
 pending at the time of this entry.
+
+## 2026-07-18 — Complete the 104-channel EEG smoke test
+
+The `v1_full_smoke_no_cz` run completed on CUDA with no all-missing training
+features:
+
+```text
+fold 1: accuracy 0.350, macro-F1 0.173, all-missing train features 0
+fold 2: accuracy 0.310, macro-F1 0.158, all-missing train features 0
+OOF:    accuracy 0.330, macro-F1 0.265222
+```
+
+The result was saved under
+`Results/zuco_multimodal_sentiment/v1_full_smoke_no_cz/eeg_only/seed_42.json`.
+The lower one-epoch accuracy relative to the earlier smoke runs was not treated
+as a performance comparison. Macro-F1 was nearly unchanged, and all three runs
+used only one training epoch. The purpose of this run was to confirm that the
+104-channel tensor, preprocessing, model forward/backward pass, evaluation, and
+result saving all work without unavailable features.
+
+## 2026-07-18 — Add a text + gated-fusion smoke test
+
+The completed smoke tests had exercised only the EEG branch. A second short
+test was added before the full suite to cover the remaining high-risk path:
+
+```text
+setups: text_finetune, gated_finetune
+seed: 42
+folds: 2
+epochs: 1
+run tag: v1_full_smoke_multimodal
+```
+
+This test checks loading LaBSE from the persistent artifact, fine-tuning the
+text encoder, gated text–EEG fusion, CUDA memory use, and paired text/fusion
+report generation. It must pass before starting the full experiment suite.

@@ -84,8 +84,9 @@ run, and save. The notebook:
 5. validates text/EEG alignment;
 6. runs a short EEG-only smoke test;
 7. prepares one persistent LaBSE copy;
-8. launches the complete experiment suite;
-9. displays the saved summary and plots.
+8. runs a short text + gated-fusion smoke test;
+9. launches the complete experiment suite;
+10. displays the saved summary and plots.
 
 The first text-model run downloads about 1.90 GB for LaBSE into Drive. Later
 Colab sessions reuse that copy. At the start of a session, the notebook copies
