@@ -379,3 +379,16 @@ interpreting modality effects.
 
 After this smoke test passed, section 9 was started with the full comparison
 suite under `v1_full`.
+
+## 2026-07-18 — Keep model execution on Colab
+
+Local training on the 24 GB Apple-silicon MacBook Air was considered and then
+left out of scope. Supporting its GPU would require an MPS execution path,
+additional local dependencies and model storage, and separate backend
+validation. Mixing MPS and CUDA runs could also make the main experiment less
+consistent.
+
+All official smoke tests and full experiments will therefore continue on Colab
+CUDA. The Mac will remain limited to lightweight source editing and checks that
+require no project dependency installation, model download, dataset download,
+or training.
