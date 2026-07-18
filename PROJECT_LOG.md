@@ -266,3 +266,25 @@ n_globally_all_missing_features: 0
 
 After this smoke test succeeds, the next step is the full versioned experiment
 suite under `v1_full`.
+
+## 2026-07-18 — Validate the Cz exclusion in Colab
+
+Section 5 was rerun after updating the loader. It reported:
+
+```text
+400 sentences
+12 subjects
+2,496 model features
+104 model channels
+24 feature families
+4,537 usable subject-sentence rows
+0 globally all-missing features
+dropped reference: Cz / ch104 / 24 cached features
+```
+
+The subject coverage, class counts, and number of usable subject-sentence rows
+were unchanged from the 105-channel inspection. This confirms that the loader
+removed only the 24 Cz reference features; it did not remove any sentences,
+subjects, or usable recordings. The 104-channel smoke run
+`v1_full_smoke_no_cz` was started after this validation; its results were still
+pending at the time of this entry.
