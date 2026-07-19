@@ -707,6 +707,10 @@ Sections 13 and 14 share the same resumable Drive run folder. This allows the
 fine-tuned and frozen phases to be run separately without losing or repeating
 completed setup/seed files.
 
+The section 12 smoke cell displays its direct aligned-versus-zero comparison,
+modality diagnostics, and initialization-verification metadata immediately
+after completion so the new path can be checked before starting the full run.
+
 ## 2026-07-19 — Clarify seeds, folds, and bootstrap uncertainty
 
 The five folds and three seeds are part of model training and evaluation:
