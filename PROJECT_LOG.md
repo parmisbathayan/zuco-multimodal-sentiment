@@ -436,6 +436,14 @@ gated_shuffled_finetune: seed 62
 gated_noise_finetune:    seeds 42, 52
 ```
 
+Their saved out-of-fold results were:
+
+```text
+gated_shuffled_finetune seed 62: accuracy 0.698, macro-F1 0.692
+gated_noise_finetune seed 42:    accuracy 0.715, macro-F1 0.710
+gated_noise_finetune seed 52:    accuracy 0.705, macro-F1 0.700
+```
+
 Drive now contains 20 of the planned 21 result JSON files. The only remaining
 job is:
 
