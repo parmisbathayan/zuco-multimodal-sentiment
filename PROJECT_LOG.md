@@ -886,3 +886,67 @@ Section 14 has not been run: no `text_frozen`, `gated_frozen`,
 `gated_shuffled_frozen`, `gated_noise_frozen`, or `gated_zero_frozen` folders
 exist in the diagnostic run. The frozen-text phase remains necessary to test
 whether EEG becomes usable when LaBSE cannot adapt and dominate the task.
+
+## 2026-07-22 — Complete the frozen controlled phase and full diagnostic suite
+
+Section 14 completed successfully. Drive contains all three seeds for each of
+the five frozen setups, bringing `v2_controlled_diagnostics` to all 30 planned
+setup/seed results. The combined summary, direct-control comparisons,
+diagnostics, metadata, score plot, and confusion plot were regenerated after
+the final seed.
+
+Initialization fingerprints matched for all seed/fold groups across both text
+modes:
+
+```text
+matched_initialization_groups_verified: 30
+```
+
+The frozen-text results were:
+
+| setup | accuracy mean | accuracy SD | macro-F1 mean | macro-F1 SD |
+|---|---:|---:|---:|---:|
+| `text_frozen` | 0.6033 | 0.0077 | 0.5971 | 0.0093 |
+| `gated_frozen` | 0.6075 | 0.0074 | 0.6018 | 0.0092 |
+| `gated_shuffled_frozen` | 0.6083 | 0.0077 | 0.6029 | 0.0097 |
+| `gated_noise_frozen` | 0.6075 | 0.0108 | 0.6023 | 0.0130 |
+| `gated_zero_frozen` | 0.6075 | 0.0094 | 0.6020 | 0.0113 |
+
+All gated frozen models were only about `0.0047`–`0.0058` macro-F1 above
+frozen text, and every interval against frozen text included zero. Direct
+aligned-control comparisons were:
+
+```text
+aligned minus shuffled: -0.00113, CI [-0.00628, 0.00265], agreement 99.42%
+aligned minus noise:    -0.00053, CI [-0.01240, 0.01019], agreement 97.42%
+aligned minus zero:     -0.00020, CI [-0.00708, 0.00578], agreement 99.17%
+```
+
+Shuffled EEG was numerically the best frozen multimodal setup. Freezing LaBSE
+therefore did not expose a useful alignment-specific EEG contribution.
+
+The aligned frozen EEG contribution was larger relative to text than in the
+fine-tuned condition because the frozen text embeddings had a smaller norm:
+
+```text
+aligned frozen EEG contribution / text norm: 3.65%
+aligned frozen mean logit-delta L2:          0.0289
+aligned frozen predictions changed without EEG: 1.42% (17 of 1,200)
+
+shuffled frozen predictions changed without EEG: 1.33% (16 of 1,200)
+noise frozen predictions changed without EEG:    2.33% (28 of 1,200)
+zero frozen predictions changed without EEG:     0.00%
+```
+
+Although the frozen EEG branch changed more decisions than the fine-tuned
+branch, shuffled EEG and noise changed a similar or larger number and matched or
+outperformed aligned EEG. The gate again stayed near its `0.1192`
+initialization. Across both text modes, the controlled evidence therefore does
+not support an alignment-specific benefit from the current handcrafted EEG
+features and pooling/fusion architecture.
+
+Section 15 initially raised `NameError: Markdown is not defined`. This occurred
+only while displaying already generated files and did not affect training,
+saving, or reporting. The notebook was updated so section 15 imports `Image`,
+`Markdown`, and `display` itself and defines the diagnostic result path
+directly, making the display section safe after a runtime restart.
