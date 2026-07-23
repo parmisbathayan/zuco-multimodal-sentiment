@@ -98,35 +98,16 @@ so extraction is performed once and reused.
 
 ## Colab
 
-Open `notebooks/zuco_multimodal_colab.ipynb` in a GPU runtime and run it from top
-to bottom. Each section begins with a short description of what it will read,
-run, and save. The notebook:
+Open `notebooks/zuco_multimodal_colab.ipynb` and run all four sections from top
+to bottom. A CPU runtime is sufficient. The current notebook mounts Drive,
+updates the repository, verifies the saved v2 results and feature cache, runs
+the no-training Step 1 analysis, and displays its findings and plots. It does
+not install packages, load LaBSE, or repeat completed training.
 
-1. mounts Drive and checks the runtime;
-2. clones or updates this repository and installs its requirements;
-3. defines the data, cache, result, and run-version paths;
-4. builds or resumes the classical feature cache;
-5. validates text/EEG alignment;
-6. runs a short EEG-only smoke test;
-7. prepares one persistent LaBSE copy;
-8. runs a short text + gated-fusion smoke test;
-9. launches the complete experiment suite;
-10. displays the saved summary and plots;
-11. optionally rebuilds reports without retraining;
-12. smoke-tests the matched-control implementation;
-13. runs fine-tuned aligned, shuffled, noise, and zero controls;
-14. repeats the controls with frozen LaBSE;
-15. displays the controlled diagnostic tables and plots.
-
-The first text-model run downloads about 1.90 GB for LaBSE into Drive. Later
-Colab sessions reuse that copy. At the start of a session, the notebook copies
-it to Colab's temporary disk once so repeated fold initialization does not read
-the large weights directly from mounted Drive.
-
-`RUN_TAG` is the version of an experiment. Re-running the same tag skips completed
-setup/seed files and resumes the missing work. Change the tag when a model or
-training setting changes. A run tag cannot silently mix incompatible training
-settings.
+The earlier 15-section v1/v2 training runner is retained at
+`notebooks/archive/zuco_v1_v2_training_colab.ipynb` for reproducibility. It is
+not part of the current workflow and should only be used if the completed model
+runs genuinely need to be reproduced from the beginning.
 
 ## Command-line use
 
@@ -237,7 +218,7 @@ The confidence score is the softmax confidence of `logits_without_eeg` inside
 the matched gated model. It is not a confidence score from the separately
 trained text-only model, whose logits were not saved.
 
-Run the minimal `notebooks/zuco_step1_closeout_colab.ipynb` notebook after the
+Run the minimal `notebooks/zuco_multimodal_colab.ipynb` notebook after the
 controlled suite. Its derived outputs are written to:
 
 ```text

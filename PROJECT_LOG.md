@@ -1105,3 +1105,16 @@ findings, decision, and plots. It uses Colab's existing analysis libraries and
 does not install packages or download LaBSE. The implementation has not yet been
 executed on the Drive results; `v3_closeout_analysis` findings should be added
 to this log only after the Colab run completes.
+
+## 2026-07-23 — Clean the current Colab runner
+
+The notebook layout was simplified to remove ambiguity about which sections to
+run next. `notebooks/zuco_multimodal_colab.ipynb` is now the canonical current
+runner and contains only four Step 1 sections: mount/update, verify paths, run
+the analysis, and display the results. Running it from top to bottom does not
+repeat training, install packages, or prepare LaBSE.
+
+The original 15-section v1/v2 training notebook was not discarded. It was moved
+to `notebooks/archive/zuco_v1_v2_training_colab.ipynb` so the completed training
+workflow remains reproducible without cluttering the current runner. The
+temporary duplicate `zuco_step1_closeout_colab.ipynb` name was removed.
