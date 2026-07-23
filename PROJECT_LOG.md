@@ -1051,3 +1051,57 @@ itself: apparent multimodal gains can be reproduced by shuffled, noise, and
 zero modalities, showing why modality-specific controls are necessary. This is
 more defensible than selecting a superficially better multimodal score after a
 large uncontrolled architecture search.
+
+## 2026-07-23 — Implement Step 1 saved-prediction closeout analysis
+
+The first roadmap phase was implemented as `analyze_results.py` and
+`src/closeout_analysis.py`. It reads the completed
+`v2_controlled_diagnostics` setup/seed JSON files and does not retrain or load a
+model. Its versioned Drive output is `v3_closeout_analysis`.
+
+The analysis reconstructs a held-out row for every gated setup, seed, and
+sentence. It records class, word count, length group, number of available
+readers, predictions with and without the modality, favorable and unfavorable
+prediction flips, embedding and contribution norms, and the logit change. Text
+confidence and margin come from each matched gated model's
+`logits_without_eeg`. This is intentionally described as *text-path confidence*
+rather than confidence from the separately trained text-only model, because
+text-only logits were not saved.
+
+Two questions are kept separate in the outputs. The within-model contribution
+table compares every trained gated model with and without its own modality
+contribution. The paired control table then asks the stronger question of
+whether aligned EEG performs better than independently trained but
+initialization-matched shuffled, noise, and zero models. A beneficial
+within-model flip is not treated as evidence of EEG alignment unless the paired
+negative controls support it.
+
+Aligned EEG is compared directly with shuffled, noise, and zero controls for:
+
+- the complete dataset;
+- the lowest-confidence 25% and 50% of predictions;
+- sentences that the aligned model's no-EEG pathway classified incorrectly;
+- each true class;
+- short, medium, and long sentences;
+- four confidence quartiles; and
+- every observed reader count.
+
+The uncertainty calculation resamples unique sentence IDs and retains all seed
+predictions belonging to each resampled sentence. This sentence-cluster
+bootstrap avoids treating three predictions of the same sentence as three
+independent observations. It still does not estimate generalization to unseen
+subjects, random seeds, or datasets.
+
+The predefined exploratory stop screen is deliberately strict. A text-hard
+subset must beat every control by at least `0.015` accuracy, have a positive
+sentence-cluster interval against every control, and favor aligned EEG in at
+least two seeds. Class, length, reader-count, confidence-quartile, and individual
+sentence findings remain exploratory and cannot redefine the primary task after
+the results are viewed.
+
+The minimal `notebooks/zuco_step1_closeout_colab.ipynb` runner has four sections:
+mount/update, verify paths, run the no-training analysis, and display the saved
+findings, decision, and plots. It uses Colab's existing analysis libraries and
+does not install packages or download LaBSE. The implementation has not yet been
+executed on the Drive results; `v3_closeout_analysis` findings should be added
+to this log only after the Colab run completes.

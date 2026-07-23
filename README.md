@@ -219,6 +219,49 @@ so tables and plots can be regenerated without retraining:
 python plot_results.py --run-dir /path/to/results/v1_full
 ```
 
+## Step 1 closeout analysis
+
+After the matched aligned, shuffled, noise, and zero experiments are complete,
+`analyze_results.py` tests whether aligned EEG helps any predefined text-hard
+subset. It reads the saved predictions and logits only; it does not load LaBSE
+or retrain a model. The analysis includes:
+
+- low-confidence and no-EEG-error subsets;
+- class, sentence-length, confidence-quartile, and reader-coverage diagnostics;
+- favorable and unfavorable prediction flips caused by each modality;
+- aligned-versus-control accuracy and macro-F1 differences; and
+- sentence-cluster bootstrap intervals that retain all seed predictions for a
+  resampled sentence.
+
+The confidence score is the softmax confidence of `logits_without_eeg` inside
+the matched gated model. It is not a confidence score from the separately
+trained text-only model, whose logits were not saved.
+
+Run the minimal `notebooks/zuco_step1_closeout_colab.ipynb` notebook after the
+controlled suite. Its derived outputs are written to:
+
+```text
+Results/zuco_multimodal_sentiment/v3_closeout_analysis/
+  analysis_manifest.json
+  tables/
+    findings.md
+    decision.json
+    sentence_diagnostics.csv
+    paired_predictions.csv
+    prediction_flips.csv
+    modality_contribution_subsets.csv
+    subset_control_comparisons.csv
+  plots/
+    text_hard_subset_deltas.png
+    prediction_flips.png
+```
+
+This phase has a predeclared exploratory stop screen. A text-hard subset must
+show at least `0.015` aligned-minus-control accuracy, a positive sentence-cluster
+interval, and a positive direction in at least two seeds against every control.
+Failure closes the current pooled classical-feature fusion pipeline; it does not
+claim that EEG intrinsically contains no sentiment information.
+
 ## Repository layout
 
 ```text
@@ -226,6 +269,7 @@ extract_features.py       original .mat files -> reusable subject caches
 inspect_data.py           cache alignment and data summary
 run.py                    resumable cross-validation suite
 plot_results.py           rebuild tables and plots from saved JSON
+analyze_results.py        analyze saved controlled predictions without training
 src/features.py           classical EEG statistics
 src/zuco_io.py            MATLAB/HDF5 reader
 src/data.py               sentence grouping, fold preprocessing, controls
@@ -233,6 +277,7 @@ src/model.py              LaBSE, EEG set encoder, and fusion heads
 src/engine.py             fold training and best-epoch evaluation
 src/experiment.py         setup/seed orchestration
 src/reporting.py          summaries, bootstrap deltas, and plots
+src/closeout_analysis.py  text-hard subsets, prediction flips, and stop screen
 notebooks/                minimal Colab runner
 tests/                    feature, split, preprocessing, and model checks
 PROJECT_LOG.md            concise experiment and implementation decisions
